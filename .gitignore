@@ -2,6 +2,24 @@
 old/Dataset/
 results/
 
+# Ignore object files and dependent files
+.o
+.d
+
+#Ignore logs folder and log files
+/logs
+.log
+
+#Ignore lock files
+.lock
+
+.bin
+.pdi
+.vitisWorkspace.json
+
+_ide/logs
+_ide/.wsdata
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
@@ -13,6 +31,7 @@ __pycache__/
 # Distribution / packaging
 .Python
 build/
+/export
 develop-eggs/
 dist/
 downloads/
