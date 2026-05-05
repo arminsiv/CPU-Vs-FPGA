@@ -2,6 +2,8 @@
 
 This repository documents a comparative study of **dense \(N \times N\) integer matrix multiplication** across three execution environments:
 
+**Authors:** Sepehr Farrokhi, Amin Javan, Armin Siavashi (course project / report: *FPGA vs CPU*).
+
 1. **ARM CPU** — the processing system on a Xilinx Zynq SoC (e.g. PYNQ), running software-only matmul.
 2. **FPGA accelerator** — the same SoC’s programmable logic, running a custom **HLS** core (`matmul_bram_axis`) fed by **AXI DMA** from DDR.
 3. **Intel x86 CPU** — a desktop or laptop class processor running an optimized software baseline (per your report; see `host/` for reference scripts).
