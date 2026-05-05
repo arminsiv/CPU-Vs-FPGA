@@ -44,6 +44,12 @@ We want to **measure end-to-end execution time** as \(N\) grows and to **quantif
 
 Correctness checks (`OK=True` on FPGA runs) confirm the accelerator output matches the reference implementation.
 
+## FPGA implementation (from HLS)
+
+The `matmul_bram_axis` kernel streams **A** and **B** over AXI-Stream, stores them in **on-chip BRAM**, and streams **C** out. Matrices are `size × size` with `size ≤ MAX_N` (**256** in the reference design). Element type is **`ap_int<16>`** for **A** and **B**; accumulators / **C** use **`ap_int<32>`**. Arrays **A** and **B** use **cyclic partitioning** with **`PAR_FACTOR` 16** so the inner multiply-accumulate can issue many partial products in parallel.
+
+**Tool flow:** Vitis HLS (C/C++ testbench + `matmul_bram_axis.cpp`) → packaged IP → Vivado block design (Zynq-7 PS, **AXI DMA**, interconnect) → synthesis, place & route, bitstream.
+
 ## Hardware / software architecture (FPGA path)
 
 The Vivado IP integrator connects the Zynq **processing_system7**, an **axi_dma** (MM2S / S2MM), and **SmartConnect / Interconnect** fabric to the `matmul_bram_axis` core: the CPU configures the accelerator and DMA via **AXI-Lite**; matrices move between DDR and the core over **high-performance AXI** and **AXIS** streams.
