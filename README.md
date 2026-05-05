@@ -58,6 +58,21 @@ The Vivado IP integrator connects the Zynq **processing_system7**, an **axi_dma*
 | :---: | :---: |
 | ![Vivado block design](docs/images/vivado-block-design.png) | ![FPGA floorplan](docs/images/fpga-floorplan.png) |
 
+The floorplan screenshot uses Vivado region labels (**X0Y0**, …) on the silicon grid: dense cyan regions are **accelerator logic** (and related routing); **BRAM tiles** hold **A** and **B**; unused area is spare fabric.
+
+### Target device, timing, and utilization
+
+Post-placement results on **Xilinx xc7z020clg400-1** (Zynq-7020), **100 MHz** clock:
+
+| Resource | Used | Available | Utilization |
+|----------|-----:|----------:|------------:|
+| Block RAM (RAMB36) | 66 | 140 | **47%** |
+| Slice LUTs | 4,469 | 53,200 | 8.4% |
+| Flip-flops | 5,446 | 106,400 | 5.1% |
+| DSP48E1 | 16 | 220 | 7.3% |
+
+**Timing:** critical path **~6.92 ns** (design meets timing with **~3.08 ns** slack at the reported clock). BRAM is the main consumer of area; the design fits comfortably in this part.
+
 Relevant sources in this repo:
 
 - **FPGA kernels (HLS):** `fpga/hls/matmul/matmul_bram_axis.cpp`, `fpga/hls/matmul_parallel/matmul_parallel.cpp`
