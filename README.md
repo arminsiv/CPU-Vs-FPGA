@@ -82,7 +82,17 @@ Relevant sources in this repo:
 
 ## Results (from your report)
 
+**Primary comparison:** **FPGA vs ARM Cortex-A9** on the **same Zynq chip** (fair power and platform context). The **Intel laptop** numbers are **reference only** (different machine, highly optimized scalar/vector Python/BLAS-style math).
+
 Times are **milliseconds** unless noted. FPGA **speedup** is relative to **ARM CPU** (\(T_{\mathrm{ARM}} / T_{\mathrm{FPGA}}\)).
+
+| Observation | |
+|---|---|
+| **\(N=32\)** | ARM wins; FPGA pays **DMA/controller setup** and transfer overhead. |
+| **\(N \approx 64\)** | **Crossover** where FPGA overtakes ARM. |
+| **Larger \(N\)** | **Parallelism dominates**; ARM runtime grows sharply (stress on memory hierarchy / cache misses at scale). |
+| **\(N=1024\)** | ARM ~**3 minutes** vs FPGA ~**2.2 s** in these runs. |
+| **\(N=2048\)** | ARM ~**24 minutes** vs FPGA ~**17.4 s**; speedup tops out near **84×**. |
 
 ### ARM CPU (Zynq PS)
 
@@ -122,12 +132,10 @@ Times are **milliseconds** unless noted. FPGA **speedup** is relative to **ARM C
 
 ### How to read the numbers
 
-- For **small \(N\)**, PCIe/DMA/controller overhead and fixed setup dominate; the FPGA is **slower than the on-board ARM** at \(N=32\) in this dataset.
+- For **small \(N\)**, **DMA and control-path overhead** dominate; the FPGA is **slower than the on-board ARM** at \(N=32\) in this dataset.
 - Near **\(N \approx 64\)**, FPGA time crosses roughly even with ARM, then pulls away as \(N\) increases.
 - At **\(N=2048\)**, the FPGA is **~84× faster** than the ARM software path on the same board—showing why accelerators matter for compute-bound kernels at scale.
 - Versus **Intel**, the FPGA is slower at small/medium \(N\) in these measurements but becomes **competitive or faster at large \(N\)** (e.g. FPGA ~17.4 s vs Intel average ~66.1 s at 2048), which matches the intuition that offload wins when arithmetic dominates transfer and control overhead.
-
-Extend this README with your exact toolchain versions (Vivado/PYNQ, clock frequency, datatype) when you finalize the PDF report.
 
 ### Running things locally
 
