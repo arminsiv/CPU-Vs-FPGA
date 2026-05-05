@@ -137,6 +137,21 @@ Times are **milliseconds** unless noted. FPGA **speedup** is relative to **ARM C
 - At **\(N=2048\)**, the FPGA is **~84× faster** than the ARM software path on the same board—showing why accelerators matter for compute-bound kernels at scale.
 - Versus **Intel**, the FPGA is slower at small/medium \(N\) in these measurements but becomes **competitive or faster at large \(N\)** (e.g. FPGA ~17.4 s vs Intel average ~66.1 s at 2048), which matches the intuition that offload wins when arithmetic dominates transfer and control overhead.
 
+### Trade-offs (summary from the report)
+
+| Dimension | ARM Cortex-A9 | FPGA matmul IP |
+|-----------|----------------|----------------|
+| **Speed (large \(N\))** | Scalar-centric, runtime grows steeply | Dedicated datapath (e.g. **16-wide** partial parallelism); up to **~84×** vs ARM here |
+| **Small matrices** | Lower overhead | Setup / DMA cost hurts |
+| **Development** | Minutes (e.g. Python) | Days (HLS + Vivado integration) |
+| **Flexibility** | Change code immediately | Algorithm changes need re-synthesis |
+| **Power** | Full PS active for software path | Vivado **post-route power** on **xc7z020** shows **much lower** consumption for the routed accelerator path than driving the same work on ARM in the report (**~14×** in their analysis) |
+| **Determinism** | OS jitter possible | Fixed-clock, structured execution |
+
+**When an FPGA helps:** Large, repeated compute where **latency or energy** matter (edge inference, DSP, radar, closed-loop control).
+
+**When to stay on ARM:** Exploratory or one-off work, tiny problem sizes, or algorithms that change often.
+
 ### Running things locally
 
 - **Host Python:** from the repo root, `python host/matmul.py` (or open `notebooks/host_cpu_runner.ipynb`; the notebook searches upward for the folder that contains `host/`).
